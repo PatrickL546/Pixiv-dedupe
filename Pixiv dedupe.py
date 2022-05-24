@@ -13,7 +13,7 @@ import re
 def GetHash():
     while True:
         try:
-            os.system('title Get hash')
+            os.system('title Pixiv dedupe - Get hash')
             os.system('cls')
             resultPath = r'./Hash.txt'
 
@@ -50,19 +50,19 @@ def GetHash():
             os.system('pause')
             print('Going to menu...')
             time.sleep(2)
-            Main()
+            break
 
         except KeyboardInterrupt:
             os.system('cls')
             print('Going to menu...')
             time.sleep(1)
-            Main()
+            break
 
 
 def GetHashDupeAndUnique():
     while True:
         try:
-            os.system('title Get hash duplicate and unique')
+            os.system('title Pixiv dedupe - Get hash duplicate and unique')
             os.system('cls')
             resultUniquePath = r'./HashUnique.txt'
             resultDupePath = r'./HashDupe.txt'
@@ -118,19 +118,19 @@ def GetHashDupeAndUnique():
             os.system('pause')
             print('Going to menu...')
             time.sleep(2)
-            Main()
+            break
 
         except KeyboardInterrupt:
             os.system('cls')
             print('Going to menu...')
             time.sleep(1)
-            Main()
+            break
 
 
 def GetHashDifference():
     while True:
         try:
-            os.system('title Get hash difference')
+            os.system('title Pixiv dedupe - Get hash difference')
             os.system('cls')
             resultPath = r'./HashDifference.txt'
 
@@ -171,21 +171,21 @@ def GetHashDifference():
             os.system('pause')
             print('Going to menu...')
             time.sleep(2)
-            Main()
+            break
 
         except KeyboardInterrupt:
             os.system('cls')
             print('Going to menu...')
             time.sleep(1)
-            Main()
+            break
 
 
-def SortHashByHash():
+def SortHash(title, resultPath, regexPattern):
     while True:
         try:
-            os.system('title Sort hash by hash')
+            os.system(title)
             os.system('cls')
-            resultPath = r'./HashSortedByHash.txt'
+            resultPath = resultPath
 
             while True:
                 print(r'Example: C:\Users\User\Downloads\Hash.txt or Hash.txt')
@@ -204,9 +204,8 @@ def SortHashByHash():
                 hashList = f.readlines()
 
             def KeySort(hashList):
-                # Get hash, positive lookbehind, gets everything after '//'
-                hashPattern = re.compile(r'(?<=\/\/).+')
-                return list(map(str, hashPattern.findall(hashList)))
+                pattern = re.compile(regexPattern)
+                return list(map(str, pattern.findall(hashList)))
 
             hashList.sort(key=KeySort)
 
@@ -218,60 +217,13 @@ def SortHashByHash():
             os.system('pause')
             print('Going to menu...')
             time.sleep(2)
-            Main()
+            break
 
         except KeyboardInterrupt:
             os.system('cls')
             print('Going to menu...')
             time.sleep(1)
-            Main()
-
-
-def SortHashByPixivID():
-    while True:
-        try:
-            os.system('title Sort hash by Pixiv ID')
-            os.system('cls')
-            resultPath = r'./HashSortedByPixivID.txt'
-
-            while True:
-                print(r'Example: C:\Users\User\Downloads\Hash.txt or Hash.txt')
-                hashPath = input('Enter Hash path: ')
-                print()
-
-                if not os.path.exists(hashPath) or not os.path.isfile(hashPath):
-                    os.system('cls')
-                    print(f'{bcolors.FAIL}Error: Path does not exist or not a file\n{bcolors.ENDC}')
-                else:
-                    break
-
-            os.system('cls')
-            print('Thinking...\n')
-            with open(hashPath, encoding='utf-8') as f:
-                hashList = f.readlines()
-
-            def KeySort(hashList):
-                # Get PixivID, matches '(1234)\', captures 1234
-                pixivIDPattern = re.compile(r'\((\d+)\)\\')
-                return list(map(str, pixivIDPattern.findall(hashList)))
-
-            hashList.sort(key=KeySort)
-
-            with open(resultPath, 'w', encoding='utf-8') as f:
-                for line in hashList:
-                    f.write(line)
-
-            print('Done!')
-            os.system('pause')
-            print('Going to menu...')
-            time.sleep(2)
-            Main()
-
-        except KeyboardInterrupt:
-            os.system('cls')
-            print('Going to menu...')
-            time.sleep(1)
-            Main()
+            break
 # End of Hash Functions
 
 
@@ -279,7 +231,7 @@ def SortHashByPixivID():
 def RenamePixivFolders():
     while True:
         try:
-            os.system('title Rename Pixiv folders')
+            os.system('title Pixiv dedupe - Rename Pixiv folders')
             os.system('cls')
 
             while True:
@@ -304,19 +256,19 @@ def RenamePixivFolders():
             os.system('pause')
             print('Going to menu...')
             time.sleep(2)
-            Main()
+            break
 
         except KeyboardInterrupt:
             os.system('cls')
             print('Going to menu...')
             time.sleep(1)
-            Main()
+            break
 
 
 def MoveFiles():
     while True:
         try:
-            os.system('title Move files to new folders')
+            os.system('title Pixiv dedupe - Move files to new folders')
             os.system('cls')
 
             while True:
@@ -335,28 +287,24 @@ def MoveFiles():
 
             os.system('cls')
             print('Thinking...\n')
-            # Make new list of dupes and only keep one of same filename and hash
-            singleDupeHashList = []
-            visited = []
+
+            # Make new list of dupes and only keep one of same filename and hash. Only keep items with Pixiv ID
+            # Get PixivID
+            moveHashList = []
+            pixivIDList = []
+            visited = set()
+            # Get PixivID, matches '(1234)\', captures 1234
+            pixivIDPattern = re.compile(r'\((\d+)\)\\')
             for line in hashList:
                 lineTuple = line.partition('//')
                 fileName = os.path.basename(lineTuple[0])
                 hash = lineTuple[2]
                 fileNameAndHash = f'{fileName}//{hash}'
 
-                if fileNameAndHash not in visited:
-                    visited.append(fileNameAndHash)
-                    singleDupeHashList.append(line)
-
-            # Get PixivID and make list of files that has Pixiv ID, removes files without Pixiv ID
-            pixivIDList = []
-            moveHashList = []
-            # Get PixivID, matches '(1234)\', captures 1234
-            pixivIDPattern = re.compile(r'\((\d+)\)\\')
-            for line in singleDupeHashList:
-                if pixivIDPattern.findall(line):
-                    pixivIDList.append(pixivIDPattern.findall(line))
+                if fileNameAndHash not in visited and pixivIDPattern.findall(line):
+                    visited.add(fileNameAndHash)
                     moveHashList.append(line)
+                    pixivIDList.append(pixivIDPattern.findall(line))
 
             # Get Pixiv folder path
             lineTuple = moveHashList[0].partition('//')
@@ -368,13 +316,14 @@ def MoveFiles():
                 fullFilePath = os.path.join(folderPath, os.path.basename(filePath))
 
                 # Retry amount
-                for i in range(5):
+                for i in range(3):
                     try:
                         if os.path.exists(filePath):
                             shutil.move(filePath, folderPath)
+                            break
                         else:
                             print(f'File not found: {filePath}')
-                        break
+                            break
                     except shutil.Error:
                         fileTime = os.path.getctime(fullFilePath)
                         fileTime = time.strftime(r'%Y%m%d_%H%M%S', time.gmtime(fileTime))
@@ -396,13 +345,13 @@ def MoveFiles():
             os.system('pause')
             print('Going to menu...')
             time.sleep(2)
-            Main()
+            break
 
         except KeyboardInterrupt:
             os.system('cls')
             print('Going to menu...')
             time.sleep(1)
-            Main()
+            break
 
 
 def MoveOldFolders():
@@ -438,19 +387,19 @@ def MoveOldFolders():
             os.system('pause')
             print('Going to menu...')
             time.sleep(2)
-            Main()
+            break
 
         except KeyboardInterrupt:
             os.system('cls')
             print('Going to menu...')
             time.sleep(1)
-            Main()
+            break
 
 
 def GetPixivFolderListAndPixivID():
     while True:
         try:
-            os.system('title Get Pixiv folder list and Pixiv ID')
+            os.system('title Pixiv dedupe - Get Pixiv folder list and Pixiv ID')
             os.system('cls')
             resultDirectoryPath = r'./PixivFolderDirectory.txt'
             resultIDPath = r'./PixivFolderPixivID.txt'
@@ -490,20 +439,19 @@ def GetPixivFolderListAndPixivID():
             os.system('pause')
             print('Going to menu...')
             time.sleep(2)
-            Main()
+            break
 
         except KeyboardInterrupt:
             os.system('cls')
             print('Going to menu...')
             time.sleep(1)
-            Main()
+            break
 
 
 def Main():
-    os.system('title Menu')
-    os.system('cls')
-    validOptions = ('1', '2', '3', '4', '5', '6', '7', '8', '9')
+    validOptions = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
     while True:
+        os.system('title Pixiv dedupe - Menu')
         print(f'''
                         {bcolors.BOLD}Hash Functions{bcolors.ENDC}                          {bcolors.BOLD}Folder Functions{bcolors.ENDC}
                 {bcolors.OKGREEN}
@@ -526,22 +474,41 @@ def Main():
             print(f'{bcolors.FAIL}Please select a valid option{bcolors.ENDC}')
         elif selected == '1':
             GetHash()
+            os.system('cls')
         elif selected == '2':
             GetHashDupeAndUnique()
+            os.system('cls')
         elif selected == '3':
             GetHashDifference()
+            os.system('cls')
         elif selected == '4':
-            SortHashByHash()
+            title = 'title Pixiv dedupe - Sort hash by hash'
+            resultPath = r'./HashSortedByHash.txt'
+            # Get hash, positive lookbehind, gets everything after '//'
+            regexPattern = r'(?<=\/\/).+'
+
+            SortHash(title, resultPath, regexPattern)
+            os.system('cls')
         elif selected == '5':
-            SortHashByPixivID()
+            title = 'title Pixiv dedupe - Sort hash by Pixiv ID'
+            resultPath = r'./HashSortedByPixivID.txt'
+            # Get PixivID, matches '(1234)\', captures 1234
+            regexPattern = r'\((\d+)\)\\'
+
+            SortHash(title, resultPath, regexPattern)
+            os.system('cls')
         elif selected == '6':
             RenamePixivFolders()
+            os.system('cls')
         elif selected == '7':
             MoveFiles()
+            os.system('cls')
         elif selected == '8':
             MoveOldFolders()
+            os.system('cls')
         elif selected == '9':
             GetPixivFolderListAndPixivID()
+            os.system('cls')
 
 
 if __name__ == '__main__':
