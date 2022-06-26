@@ -15,7 +15,7 @@ def get_hash():
         try:
             os.system('title Pixiv dedupe - Get hash')
             os.system('cls')
-            result_path = r'./Hash.txt'
+            result_path = './Hash.txt'
 
             while True:
                 print('This uses Blake8 as the hasher\n')
@@ -64,8 +64,8 @@ def get_hash_dupe_and_unique():
         try:
             os.system('title Pixiv dedupe - Get hash duplicate and unique')
             os.system('cls')
-            result_unique_path = r'./HashUnique.txt'
-            result_dupe_path = r'./HashDupe.txt'
+            result_unique_path = './HashUnique.txt'
+            result_dupe_path = './HashDupe.txt'
 
             while True:
                 print('Duplicates are counted when same file name and hash, everything else is unique\n')
@@ -132,7 +132,7 @@ def get_hash_difference():
         try:
             os.system('title Pixiv dedupe - Get hash difference')
             os.system('cls')
-            result_path = r'./HashDifference.txt'
+            result_path = './HashDifference.txt'
 
             def check():
                 while True:
@@ -326,7 +326,7 @@ def move_files():
                             break
                     except shutil.Error:
                         file_time = os.path.getctime(full_file_path)
-                        file_time = time.strftime(r'%Y%m%d_%H%M%S', time.gmtime(file_time))
+                        file_time = time.strftime('%Y%m%d_%H%M%S', time.gmtime(file_time))
                         os.rename(full_file_path, f'{full_file_path}.{file_time}')
 
             fanbox_pattern = re.compile(r'\\old_FANBOX')
@@ -401,8 +401,8 @@ def get_pixiv_folder_list_and_pixiv_id():
         try:
             os.system('title Pixiv dedupe - Get Pixiv folder list and Pixiv ID')
             os.system('cls')
-            result_directory_path = r'./PixivFolderDirectory.txt'
-            result_id_path = r'./PixivFolderPixivID.txt'
+            result_directory_path = './PixivFolderDirectory.txt'
+            result_id_path = './PixivFolderPixivID.txt'
 
             while True:
                 print('The result does not include folders without a Pixiv ID, keeps folders like ex. test (1234)')
@@ -483,7 +483,7 @@ def main():
             os.system('cls')
         elif selected == '4':
             title = 'title Pixiv dedupe - Sort hash by hash'
-            result_path = r'./HashSortedByHash.txt'
+            result_path = './HashSortedByHash.txt'
             # Get hash, positive lookbehind, gets everything after '//'
             regex_pattern = r'(?<=\/\/).+'
 
@@ -491,7 +491,7 @@ def main():
             os.system('cls')
         elif selected == '5':
             title = 'title Pixiv dedupe - Sort hash by Pixiv ID'
-            result_path = r'./HashSortedByPixivID.txt'
+            result_path = './HashSortedByPixivID.txt'
             # Get PixivID, matches '(1234)\', captures 1234
             regex_pattern = r'\((\d+)\)\\'
 
