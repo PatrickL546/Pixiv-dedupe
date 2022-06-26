@@ -134,7 +134,7 @@ def get_hash_difference():
             os.system('cls')
             result_path = r'./HashDifference.txt'
 
-            def Check():
+            def check():
                 while True:
                     print(r'Example: C:\Users\User\Downloads\Hash.txt or Hash.txt')
                     hash_path = input('Enter Hash path: ')
@@ -148,9 +148,9 @@ def get_hash_difference():
 
             print(f'{bcolors.WARNING}This will lose order{bcolors.ENDC}\n')
             print('First Hash\n')
-            file_1 = Check()
+            file_1 = check()
             print('Second Hash\n')
-            file_2 = Check()
+            file_2 = check()
 
             os.system('cls')
             print('Thinking...\n')
@@ -203,11 +203,11 @@ def sort_hash(title, result_path, regex_pattern):
             with open(hash_path, encoding='utf-8') as f:
                 hash_list = f.readlines()
 
-            def KeySort(hash_list):
+            def key_sort(hash_list):
                 pattern = re.compile(regex_pattern)
                 return list(map(str, pattern.findall(hash_list)))
 
-            hash_list.sort(key=KeySort)
+            hash_list.sort(key=key_sort)
 
             with open(result_path, 'w', encoding='utf-8') as f:
                 for line in hash_list:
