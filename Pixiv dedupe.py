@@ -10,20 +10,20 @@ import re
 
 
 # Start of Hash Functions
-def GetHash():
+def get_hash():
     while True:
         try:
             os.system('title Pixiv dedupe - Get hash')
             os.system('cls')
-            resultPath = r'./Hash.txt'
+            result_path = r'./Hash.txt'
 
             while True:
                 print('This uses Blake8 as the hasher\n')
                 print(r'Example: C:\Pixiv')
-                pathToHash = input('Enter directory to hash: ')
+                path_to_hash = input('Enter directory to hash: ')
                 print()
 
-                if not os.path.exists(pathToHash) or not os.path.isdir(pathToHash):
+                if not os.path.exists(path_to_hash) or not os.path.isdir(path_to_hash):
                     os.system('cls')
                     print(f'{bcolors.FAIL}Error: Path does not exist or not a directory\n{bcolors.ENDC}')
                 else:
@@ -31,19 +31,19 @@ def GetHash():
 
             os.system('cls')
             print('Hashing...\n')
-            pathAndHash = []
-            for path in Path(pathToHash).rglob('*'):
+            path_and_hash = []
+            for path in Path(path_to_hash).rglob('*'):
                 blake = blake3()
                 if not Path.is_dir(path):
                     with open(path, 'rb') as f:
                         blake.update(f.read())
-                    pathAndHash.append(f'{str(path)}//{str(blake.hexdigest())}\n')
-                    print(f'Files hashed: {len(pathAndHash)}', end='\r')
+                    path_and_hash.append(f'{str(path)}//{str(blake.hexdigest())}\n')
+                    print(f'Files hashed: {len(path_and_hash)}', end='\r')
                 else:
                     pass
 
-            with open(resultPath, 'w', encoding='utf-8') as f:
-                for line in pathAndHash:
+            with open(result_path, 'w', encoding='utf-8') as f:
+                for line in path_and_hash:
                     f.write(line)
 
             print('\nDone!')
@@ -59,21 +59,21 @@ def GetHash():
             break
 
 
-def GetHashDupeAndUnique():
+def get_hash_dupe_and_unique():
     while True:
         try:
             os.system('title Pixiv dedupe - Get hash duplicate and unique')
             os.system('cls')
-            resultUniquePath = r'./HashUnique.txt'
-            resultDupePath = r'./HashDupe.txt'
+            result_unique_path = r'./HashUnique.txt'
+            result_dupe_path = r'./HashDupe.txt'
 
             while True:
                 print('Duplicates are counted when same file name and hash, everything else is unique\n')
                 print(r'Example: C:\Users\User\Downloads\Hash.txt or Hash.txt')
-                hashPath = input('Enter Hash path: ')
+                hash_path = input('Enter Hash path: ')
                 print()
 
-                if not os.path.exists(hashPath) or not os.path.isfile(hashPath):
+                if not os.path.exists(hash_path) or not os.path.isfile(hash_path):
                     os.system('cls')
                     print(f'{bcolors.FAIL}Error: Path does not exist or not a file\n{bcolors.ENDC}')
                 else:
@@ -81,37 +81,37 @@ def GetHashDupeAndUnique():
 
             os.system('cls')
             print('Thinking...\n')
-            with open(hashPath, encoding='utf-8') as f:
-                hashList = f.readlines()
+            with open(hash_path, encoding='utf-8') as f:
+                hash_list = f.readlines()
 
-            fileNameAndHash = []
-            uniqueHash = []
-            duplicateHash = []
+            file_name_and_hash = []
+            unique_hash = []
+            dupe_hash = []
             # Make list of only filename//hash
-            for line in hashList:
-                lineTuple = line.partition('//')
-                fileName = os.path.basename(lineTuple[0])
-                hash = lineTuple[2]
-                fileNameAndHash.append(f'{fileName}//{hash}')
+            for line in hash_list:
+                line_tuple = line.partition('//')
+                file_name = os.path.basename(line_tuple[0])
+                hash = line_tuple[2]
+                file_name_and_hash.append(f'{file_name}//{hash}')
 
             # Count filename//hash
-            fileNameAndHashCountDict = Counter(fileNameAndHash)
+            file_name_and_hash_count_dict = Counter(file_name_and_hash)
 
             # Find unique and dupe by count
-            for index, line in enumerate(hashList):
-                fileNameAndHashCount = fileNameAndHashCountDict.get(fileNameAndHash[index])
+            for index, line in enumerate(hash_list):
+                file_name_and_hash_count = file_name_and_hash_count_dict.get(file_name_and_hash[index])
 
-                if fileNameAndHashCount == 1:
-                    uniqueHash.append(line)
+                if file_name_and_hash_count == 1:
+                    unique_hash.append(line)
                 else:
-                    duplicateHash.append(line)
+                    dupe_hash.append(line)
 
-            with open(resultUniquePath, 'w', encoding='utf-8') as f:
-                for line in uniqueHash:
+            with open(result_unique_path, 'w', encoding='utf-8') as f:
+                for line in unique_hash:
                     f.write(line)
 
-            with open(resultDupePath, 'w', encoding='utf-8') as f:
-                for line in duplicateHash:
+            with open(result_dupe_path, 'w', encoding='utf-8') as f:
+                for line in dupe_hash:
                     f.write(line)
 
             print('Done!')
@@ -127,43 +127,43 @@ def GetHashDupeAndUnique():
             break
 
 
-def GetHashDifference():
+def get_hash_difference():
     while True:
         try:
             os.system('title Pixiv dedupe - Get hash difference')
             os.system('cls')
-            resultPath = r'./HashDifference.txt'
+            result_path = r'./HashDifference.txt'
 
             def Check():
                 while True:
                     print(r'Example: C:\Users\User\Downloads\Hash.txt or Hash.txt')
-                    hashPath = input('Enter Hash path: ')
+                    hash_path = input('Enter Hash path: ')
                     print()
 
-                    if not os.path.exists(hashPath) or not os.path.isfile(hashPath):
+                    if not os.path.exists(hash_path) or not os.path.isfile(hash_path):
                         os.system('cls')
                         print(f'{bcolors.FAIL}Error: Path does not exist or not a file\n{bcolors.ENDC}')
                     else:
-                        return hashPath
+                        return hash_path
 
             print(f'{bcolors.WARNING}This will lose order{bcolors.ENDC}\n')
             print('First Hash\n')
-            file1 = Check()
+            file_1 = Check()
             print('Second Hash\n')
-            file2 = Check()
+            file_2 = Check()
 
             os.system('cls')
             print('Thinking...\n')
-            with open(file1, encoding='utf-8') as f:
-                hashFile1 = f.readlines()
+            with open(file_1, encoding='utf-8') as f:
+                hash_file_1 = f.readlines()
 
-            with open(file2, encoding='utf-8') as f:
-                hashFile2 = f.readlines()
+            with open(file_2, encoding='utf-8') as f:
+                hash_file_2 = f.readlines()
 
             # Find difference between 2 list, get item in list 1 not exist in list 2 and vice versa
-            difference = set(hashFile1) ^ set(hashFile2)
+            difference = set(hash_file_1) ^ set(hash_file_2)
 
-            with open(resultPath, 'w', encoding='utf-8') as f:
+            with open(result_path, 'w', encoding='utf-8') as f:
                 for line in difference:
                     f.write(line)
 
@@ -180,19 +180,19 @@ def GetHashDifference():
             break
 
 
-def SortHash(title, resultPath, regexPattern):
+def sort_hash(title, result_path, regex_pattern):
     while True:
         try:
             os.system(title)
             os.system('cls')
-            resultPath = resultPath
+            result_path = result_path
 
             while True:
                 print(r'Example: C:\Users\User\Downloads\Hash.txt or Hash.txt')
-                hashPath = input('Enter Hash path: ')
+                hash_path = input('Enter Hash path: ')
                 print()
 
-                if not os.path.exists(hashPath) or not os.path.isfile(hashPath):
+                if not os.path.exists(hash_path) or not os.path.isfile(hash_path):
                     os.system('cls')
                     print(f'{bcolors.FAIL}Error: Path does not exist or not a file\n{bcolors.ENDC}')
                 else:
@@ -200,17 +200,17 @@ def SortHash(title, resultPath, regexPattern):
 
             os.system('cls')
             print('Thinking...\n')
-            with open(hashPath, encoding='utf-8') as f:
-                hashList = f.readlines()
+            with open(hash_path, encoding='utf-8') as f:
+                hash_list = f.readlines()
 
-            def KeySort(hashList):
-                pattern = re.compile(regexPattern)
-                return list(map(str, pattern.findall(hashList)))
+            def KeySort(hash_list):
+                pattern = re.compile(regex_pattern)
+                return list(map(str, pattern.findall(hash_list)))
 
-            hashList.sort(key=KeySort)
+            hash_list.sort(key=KeySort)
 
-            with open(resultPath, 'w', encoding='utf-8') as f:
-                for line in hashList:
+            with open(result_path, 'w', encoding='utf-8') as f:
+                for line in hash_list:
                     f.write(line)
 
             print('Done!')
@@ -228,7 +228,7 @@ def SortHash(title, resultPath, regexPattern):
 
 
 # Start of Folder Functions
-def RenamePixivFolders():
+def rename_pixiv_folders():
     while True:
         try:
             os.system('title Pixiv dedupe - Rename Pixiv folders')
@@ -237,10 +237,10 @@ def RenamePixivFolders():
             while True:
                 print("This will append 'old_' to the folders, it will not keep appending it if it startswith 'old_'\n")
                 print(r'Example: C:\Pixiv')
-                pixivPath = input('Enter directory to rename: ')
+                pixiv_path = input('Enter directory to rename: ')
                 print()
 
-                if not os.path.exists(pixivPath) or not os.path.isdir(pixivPath):
+                if not os.path.exists(pixiv_path) or not os.path.isdir(pixiv_path):
                     os.system('cls')
                     print(f'{bcolors.FAIL}Error: Path does not exist or not a directory\n{bcolors.ENDC}')
                 else:
@@ -248,9 +248,9 @@ def RenamePixivFolders():
 
             os.system('cls')
             print('Thinking...\n')
-            for path in Path(pixivPath).glob('*'):
+            for path in Path(pixiv_path).glob('*'):
                 if Path.is_dir(path) and not path.name.startswith('old_'):
-                    path.rename(os.path.join(pixivPath, f'old_{path.name}'))
+                    path.rename(os.path.join(pixiv_path, f'old_{path.name}'))
 
             print('Done!')
             os.system('pause')
@@ -265,7 +265,7 @@ def RenamePixivFolders():
             break
 
 
-def MoveFiles():
+def move_files():
     while True:
         try:
             os.system('title Pixiv dedupe - Move files to new folders')
@@ -273,73 +273,73 @@ def MoveFiles():
 
             while True:
                 print(r'Example: C:\Users\User\Downloads\Hash.txt or Hash.txt')
-                hashPath = input('Enter Hash path: ')
+                hash_path = input('Enter Hash path: ')
                 print()
 
-                if not os.path.exists(hashPath) or not os.path.isfile(hashPath):
+                if not os.path.exists(hash_path) or not os.path.isfile(hash_path):
                     os.system('cls')
                     print(f'{bcolors.FAIL}Error: Path does not exist or not a file\n{bcolors.ENDC}')
                 else:
                     break
 
-            with open(hashPath, encoding='utf-8') as f:
-                hashList = f.readlines()
+            with open(hash_path, encoding='utf-8') as f:
+                hash_list = f.readlines()
 
             os.system('cls')
             print('Thinking...\n')
 
             # Make new list of dupes and only keep one of same filename and hash. Only keep items with Pixiv ID
             # Get PixivID
-            moveHashList = []
-            pixivIDList = []
+            move_hash_list = []
+            pixiv_id_list = []
             visited = set()
             # Get PixivID, matches '(1234)\', captures 1234
-            pixivIDPattern = re.compile(r'\((\d+)\)\\')
-            for line in hashList:
-                lineTuple = line.partition('//')
-                fileName = os.path.basename(lineTuple[0])
-                hash = lineTuple[2]
-                fileNameAndHash = f'{fileName}//{hash}'
+            pixiv_id_pattern = re.compile(r'\((\d+)\)\\')
+            for line in hash_list:
+                line_tuple = line.partition('//')
+                file_name = os.path.basename(line_tuple[0])
+                hash = line_tuple[2]
+                file_name_and_hash = f'{file_name}//{hash}'
 
-                if fileNameAndHash not in visited and pixivIDPattern.findall(line):
-                    visited.add(fileNameAndHash)
-                    moveHashList.append(line)
-                    pixivIDList.append(pixivIDPattern.findall(line))
+                if file_name_and_hash not in visited and pixiv_id_pattern.findall(line):
+                    visited.add(file_name_and_hash)
+                    move_hash_list.append(line)
+                    pixiv_id_list.append(pixiv_id_pattern.findall(line))
 
             # Get Pixiv folder path
-            lineTuple = moveHashList[0].partition('//')
-            pixivFolder = Path(lineTuple[0]).parents[1]
+            line_tuple = move_hash_list[0].partition('//')
+            pixiv_folder = Path(line_tuple[0]).parents[1]
 
             # Move files to folder
-            def MoveFiles(filePath, folderPath):
-                os.makedirs(folderPath, exist_ok=True)
-                fullFilePath = os.path.join(folderPath, os.path.basename(filePath))
+            def move_files(file_path, folder_path):
+                os.makedirs(folder_path, exist_ok=True)
+                full_file_path = os.path.join(folder_path, os.path.basename(file_path))
 
                 # Retry amount
                 for i in range(3):
                     try:
-                        if os.path.exists(filePath):
-                            shutil.move(filePath, folderPath)
+                        if os.path.exists(file_path):
+                            shutil.move(file_path, folder_path)
                             break
                         else:
-                            print(f'File not found: {filePath}')
+                            print(f'File not found: {file_path}')
                             break
                     except shutil.Error:
-                        fileTime = os.path.getctime(fullFilePath)
-                        fileTime = time.strftime(r'%Y%m%d_%H%M%S', time.gmtime(fileTime))
-                        os.rename(fullFilePath, f'{fullFilePath}.{fileTime}')
+                        file_time = os.path.getctime(full_file_path)
+                        file_time = time.strftime(r'%Y%m%d_%H%M%S', time.gmtime(file_time))
+                        os.rename(full_file_path, f'{full_file_path}.{file_time}')
 
-            fanboxPattern = re.compile(r'\\old_FANBOX')
-            for index, line in enumerate(moveHashList):
-                lineTuple = line.partition('//')
-                filePath = lineTuple[0]
+            fanbox_pattern = re.compile(r'\\old_FANBOX')
+            for index, line in enumerate(move_hash_list):
+                line_tuple = line.partition('//')
+                file_path = line_tuple[0]
 
-                if fanboxPattern.findall(line):
-                    fanboxFolderPath = os.path.join(pixivFolder, f'FANBOX ({pixivIDList[index][0]})')
-                    MoveFiles(filePath, fanboxFolderPath)
+                if fanbox_pattern.findall(line):
+                    fanbox_folder_path = os.path.join(pixiv_folder, f'FANBOX ({pixiv_id_list[index][0]})')
+                    move_files(file_path, fanbox_folder_path)
                 else:
-                    pixivFolderPath = os.path.join(pixivFolder, f'({pixivIDList[index][0]})')
-                    MoveFiles(filePath, pixivFolderPath)
+                    pixiv_folder_path = os.path.join(pixiv_folder, f'({pixiv_id_list[index][0]})')
+                    move_files(file_path, pixiv_folder_path)
 
             print('Done!')
             os.system('pause')
@@ -354,7 +354,7 @@ def MoveFiles():
             break
 
 
-def MoveOldFolders():
+def move_old_folders():
     while True:
         try:
             os.system("title Move 'old_' folders to a separate folder")
@@ -364,10 +364,10 @@ def MoveOldFolders():
                 print("Moves folders that startswith 'old_' to '!old_Pixiv'")
                 print('You can then delete this folder as it only contains duplicates\n')
                 print(r'Example: C:\Pixiv')
-                pixivPath = input('Enter Pixiv directory: ')
+                pixiv_path = input('Enter Pixiv directory: ')
                 print()
 
-                if not os.path.exists(pixivPath) or not os.path.isdir(pixivPath):
+                if not os.path.exists(pixiv_path) or not os.path.isdir(pixiv_path):
                     os.system('cls')
                     print(f'{bcolors.FAIL}Error: Path does not exist or not a directory\n{bcolors.ENDC}')
                 else:
@@ -375,13 +375,13 @@ def MoveOldFolders():
 
             os.system('cls')
             print('Thinking...\n')
-            oldFolder = '!old_Pixiv'
+            old_folder = '!old_Pixiv'
 
-            os.makedirs(os.path.join(pixivPath, oldFolder), exist_ok=True)
+            os.makedirs(os.path.join(pixiv_path, old_folder), exist_ok=True)
 
-            for path in Path(pixivPath).glob('old_*'):
+            for path in Path(pixiv_path).glob('old_*'):
                 if Path.is_dir(path):
-                    shutil.move(path, os.path.join(pixivPath, oldFolder))
+                    shutil.move(path, os.path.join(pixiv_path, old_folder))
 
             print('Done!')
             os.system('pause')
@@ -396,21 +396,21 @@ def MoveOldFolders():
             break
 
 
-def GetPixivFolderListAndPixivID():
+def get_pixiv_folder_list_and_pixiv_id():
     while True:
         try:
             os.system('title Pixiv dedupe - Get Pixiv folder list and Pixiv ID')
             os.system('cls')
-            resultDirectoryPath = r'./PixivFolderDirectory.txt'
-            resultIDPath = r'./PixivFolderPixivID.txt'
+            result_directory_path = r'./PixivFolderDirectory.txt'
+            result_id_path = r'./PixivFolderPixivID.txt'
 
             while True:
                 print('The result does not include folders without a Pixiv ID, keeps folders like ex. test (1234)')
                 print(r'Example: C:\Pixiv')
-                pixivPath = input('Enter Pixiv directory: ')
+                pixiv_path = input('Enter Pixiv directory: ')
                 print()
 
-                if not os.path.exists(pixivPath) or not os.path.isdir(pixivPath):
+                if not os.path.exists(pixiv_path) or not os.path.isdir(pixiv_path):
                     os.system('cls')
                     print(f'{bcolors.FAIL}Error: Path does not exist or not a directory\n{bcolors.ENDC}')
                 else:
@@ -418,21 +418,21 @@ def GetPixivFolderListAndPixivID():
 
             os.system('cls')
             print('Thinking...\n')
-            directoryList = []
-            pixivIDList = []
+            directory_list = []
+            pixiv_id_list = []
             # Get PixivID, matches '(1234)', captures 1234
-            pixivIDPattern = re.compile(r'\((\d+)\)')
-            for path in Path(pixivPath).glob('*'):
-                if Path.is_dir(path) and pixivIDPattern.findall(str(path)):
-                    directoryList.append(str(path))
-                    pixivIDList.append(pixivIDPattern.findall(str(path)))
+            pixiv_id_pattern = re.compile(r'\((\d+)\)')
+            for path in Path(pixiv_path).glob('*'):
+                if Path.is_dir(path) and pixiv_id_pattern.findall(str(path)):
+                    directory_list.append(str(path))
+                    pixiv_id_list.append(pixiv_id_pattern.findall(str(path)))
 
-            with open(resultDirectoryPath, 'w', encoding='utf-8') as f:
-                for line in directoryList:
+            with open(result_directory_path, 'w', encoding='utf-8') as f:
+                for line in directory_list:
                     f.write(f'{line}\n')
 
-            with open(resultIDPath, 'w', encoding='utf-8') as f:
-                for line in pixivIDList:
+            with open(result_id_path, 'w', encoding='utf-8') as f:
+                for line in pixiv_id_list:
                     f.write(f'{line[0]}\n')
 
             print('Done!')
@@ -448,8 +448,8 @@ def GetPixivFolderListAndPixivID():
             break
 
 
-def Main():
-    validOptions = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
+def main():
+    valid_options = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
     while True:
         os.system('title Pixiv dedupe - Menu')
         print(f'''
@@ -469,45 +469,45 @@ def Main():
 
         if (selected == 'q' or selected == 'Q'):
             sys.exit()
-        elif selected not in validOptions:
+        elif selected not in valid_options:
             os.system('cls')
             print(f'{bcolors.FAIL}Please select a valid option{bcolors.ENDC}')
         elif selected == '1':
-            GetHash()
+            get_hash()
             os.system('cls')
         elif selected == '2':
-            GetHashDupeAndUnique()
+            get_hash_dupe_and_unique()
             os.system('cls')
         elif selected == '3':
-            GetHashDifference()
+            get_hash_difference()
             os.system('cls')
         elif selected == '4':
             title = 'title Pixiv dedupe - Sort hash by hash'
-            resultPath = r'./HashSortedByHash.txt'
+            result_path = r'./HashSortedByHash.txt'
             # Get hash, positive lookbehind, gets everything after '//'
-            regexPattern = r'(?<=\/\/).+'
+            regex_pattern = r'(?<=\/\/).+'
 
-            SortHash(title, resultPath, regexPattern)
+            sort_hash(title, result_path, regex_pattern)
             os.system('cls')
         elif selected == '5':
             title = 'title Pixiv dedupe - Sort hash by Pixiv ID'
-            resultPath = r'./HashSortedByPixivID.txt'
+            result_path = r'./HashSortedByPixivID.txt'
             # Get PixivID, matches '(1234)\', captures 1234
-            regexPattern = r'\((\d+)\)\\'
+            regex_pattern = r'\((\d+)\)\\'
 
-            SortHash(title, resultPath, regexPattern)
+            sort_hash(title, result_path, regex_pattern)
             os.system('cls')
         elif selected == '6':
-            RenamePixivFolders()
+            rename_pixiv_folders()
             os.system('cls')
         elif selected == '7':
-            MoveFiles()
+            move_files()
             os.system('cls')
         elif selected == '8':
-            MoveOldFolders()
+            move_old_folders()
             os.system('cls')
         elif selected == '9':
-            GetPixivFolderListAndPixivID()
+            get_pixiv_folder_list_and_pixiv_id()
             os.system('cls')
 
 
@@ -524,4 +524,4 @@ if __name__ == '__main__':
         UNDERLINE = '\033[4m'
         ENDC      = '\033[0m'
 
-    Main()
+    main()
