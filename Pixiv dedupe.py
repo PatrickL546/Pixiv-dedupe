@@ -449,8 +449,9 @@ def get_pixiv_folder_list_and_pixiv_id():
 
 
 def main():
-    valid_options = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
     while True:
+        valid_options = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
+        print(f'{bcolors.OKBLUE}Check https://github.com/PatrickL546/Pixiv-dedupe for new versions{bcolors.ENDC}')
         os.system('title Pixiv dedupe - Menu')
         print(f'''
                         {bcolors.BOLD}Hash Functions{bcolors.ENDC}                          {bcolors.BOLD}Folder Functions{bcolors.ENDC}
