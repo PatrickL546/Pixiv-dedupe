@@ -17,7 +17,7 @@ A python script to deal with Pixiv folder duplicates
 
 The final folders will look like this for Pixiv: `(12345)` and Fanbox: `FANBOX (12345)`
 
-Going forward it is advised to remove `%artist%` from below to avoid making new folders if the artist changes their name
+Going forward, it is advised to remove `%artist%` from below to avoid making new folders if the artist changes their name
 
         [Filename]
         filenameFormat = %artist% (%member_id%)\%urlFilename% - %title%
@@ -56,7 +56,7 @@ Going forward it is advised to remove `%artist%` from below to avoid making new 
     Enter [Q] to Quit
 
 - [1] Get hash
-  - uses Blake8 for hashing
+  - uses Blake3 for hashing
 - [6] Rename Pixiv folders
   - append 'old_' to Pixiv folders
 - [7] Move files to new folders

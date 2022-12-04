@@ -2,6 +2,7 @@
 from collections import Counter
 from blake3 import blake3
 from pathlib import Path
+import requests
 import shutil
 import time
 import sys
@@ -13,12 +14,12 @@ import re
 def get_hash():
     while True:
         try:
-            os.system('title Pixiv dedupe - Get hash')
+            os.system(f'title Pixiv dedupe {version} - Get hash')
             os.system('cls')
             result_path = './Hash.txt'
 
             while True:
-                print('This uses Blake8 as the hasher\n')
+                print('This uses Blake3 for fast hashing\n')
                 print(r'Example: C:\Pixiv')
                 path_to_hash = input('Enter directory to hash: ')
                 print()
@@ -62,7 +63,7 @@ def get_hash():
 def get_hash_dupe_and_unique():
     while True:
         try:
-            os.system('title Pixiv dedupe - Get hash duplicate and unique')
+            os.system(f'title Pixiv dedupe {version} - Get hash duplicate and unique')
             os.system('cls')
             result_unique_path = './HashUnique.txt'
             result_dupe_path = './HashDupe.txt'
@@ -130,7 +131,7 @@ def get_hash_dupe_and_unique():
 def get_hash_difference():
     while True:
         try:
-            os.system('title Pixiv dedupe - Get hash difference')
+            os.system(f'title Pixiv dedupe {version} - Get hash difference')
             os.system('cls')
             result_path = './HashDifference.txt'
 
@@ -231,7 +232,7 @@ def sort_hash(title, result_path, regex_pattern):
 def rename_pixiv_folders():
     while True:
         try:
-            os.system('title Pixiv dedupe - Rename Pixiv folders')
+            os.system(f'title Pixiv dedupe {version} - Rename Pixiv folders')
             os.system('cls')
 
             while True:
@@ -268,7 +269,7 @@ def rename_pixiv_folders():
 def move_files():
     while True:
         try:
-            os.system('title Pixiv dedupe - Move files to new folders')
+            os.system(f'title Pixiv dedupe {version} - Move files to new folders')
             os.system('cls')
 
             while True:
@@ -399,7 +400,7 @@ def move_old_folders():
 def get_pixiv_folder_list_and_pixiv_id():
     while True:
         try:
-            os.system('title Pixiv dedupe - Get Pixiv folder list and Pixiv ID')
+            os.system(f'title Pixiv dedupe {version} - Get Pixiv folder list and Pixiv ID')
             os.system('cls')
             result_directory_path = './PixivFolderDirectory.txt'
             result_id_path = './PixivFolderPixivID.txt'
@@ -448,11 +449,20 @@ def get_pixiv_folder_list_and_pixiv_id():
             break
 
 
-def main():
+def main(version):
     while True:
+        try:
+            r = requests.get('https://api.github.com/repos/PatrickL546/Pixiv-dedupe/releases/latest')
+            online_version = r.json()['name']
+            new_version_link = r.json()['html_url']
+            if online_version > version:
+                print(f'{bcolors.OKBLUE}New version(s) is available: {online_version}{bcolors.ENDC}')
+                print(f'{bcolors.OKBLUE}{new_version_link}{bcolors.ENDC}')
+        except Exception:
+            print('Failed to check for new version')
+
         valid_options = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
-        print(f'{bcolors.OKBLUE}Check https://github.com/PatrickL546/Pixiv-dedupe for new versions{bcolors.ENDC}')
-        os.system('title Pixiv dedupe - Menu')
+        os.system(f'title Pixiv dedupe {version} - Menu')
         print(f'''
                         {bcolors.BOLD}Hash Functions{bcolors.ENDC}                          {bcolors.BOLD}Folder Functions{bcolors.ENDC}
                 {bcolors.OKGREEN}
@@ -483,7 +493,7 @@ def main():
             get_hash_difference()
             os.system('cls')
         elif selected == '4':
-            title = 'title Pixiv dedupe - Sort hash by hash'
+            title = f'title Pixiv dedupe {version} - Sort hash by hash'
             result_path = './HashSortedByHash.txt'
             # Get hash, positive lookbehind, gets everything after '//'
             regex_pattern = r'(?<=\/\/).+'
@@ -491,7 +501,7 @@ def main():
             sort_hash(title, result_path, regex_pattern)
             os.system('cls')
         elif selected == '5':
-            title = 'title Pixiv dedupe - Sort hash by Pixiv ID'
+            title = f'title Pixiv dedupe {version} - Sort hash by Pixiv ID'
             result_path = './HashSortedByPixivID.txt'
             # Get PixivID, matches '(1234)\', captures 1234
             regex_pattern = r'\((\d+)\)\\'
@@ -513,6 +523,7 @@ def main():
 
 
 if __name__ == '__main__':
+    version='v20221203'
     os.system('color')
 
     class bcolors:
@@ -525,4 +536,4 @@ if __name__ == '__main__':
         UNDERLINE = '\033[4m'
         ENDC      = '\033[0m'
 
-    main()
+    main(version)
